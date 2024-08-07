@@ -1,8 +1,8 @@
 package main
 
 import (
-	tea "github.com/charmbracelet/bubbletea"
 	"github.com/CANITEY/hackarmory/internal/ui/dependencies"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 type UiInterface int
@@ -14,8 +14,7 @@ const (
 
 
 func main() {
-	p := tea.NewProgram()
-
+	p := tea.NewProgram(dependencies.NewModel())
 	_, err := p.Run()
 	if err != nil {
 		panic(err)
