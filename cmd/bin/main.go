@@ -2,7 +2,7 @@ package main
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/CANITEY/hackarmory/internal/ui/dependency"
+	"github.com/CANITEY/hackarmory/internal/ui/dependencies"
 )
 
 type UiInterface int
