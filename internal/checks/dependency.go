@@ -10,12 +10,12 @@ type msg struct {
 }
 
 func CheckDependency(dep string) (string, error) {
-	output, err := exec.Command(dep, "--version").Output()
+	_, err := exec.Command("which", dep).Output()
 	if err != nil {
-		return "", err
+		return dep, err
 	}
 
-	return string(output), nil
+	return dep, nil
 }
 
 func CheckDependencies(deps ...string) (map[string]msg) {
