@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/CANITEY/hackarmory/internal/ui/dependencies"
+	"github.com/CANITEY/hackarmory/internal/ui/tools"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -14,7 +14,7 @@ const (
 
 
 func main() {
-	p := tea.NewProgram(dependencies.NewModel())
+	p := tea.NewProgram(tools.NewModel())
 	_, err := p.Run()
 	if err != nil {
 		panic(err)
