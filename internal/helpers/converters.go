@@ -1,10 +1,7 @@
 package helpers
 
-import (
-	"fmt"
-)
 
-func mToSBool[T comparable] (slice []T) map[T]bool {
+func StoMBool[T comparable] (slice []T) map[T]bool {
 	output := map[T]bool{}
 	for _, element := range slice {
 		output[element] = false
@@ -12,11 +9,19 @@ func mToSBool[T comparable] (slice []T) map[T]bool {
 	return output
 }
 
-func MtoS[T, U comparable](slice []T, outType string) map[T]U {
-	switch outType {
-	case "bool":
-		output := map[T]bool{}
-		output = mToSBool(slice)
-		return output
+
+func StoMStr[T comparable] (slice []T) map[T]string {
+	output := map[T]string{}
+	for _, element := range slice {
+		output[element] = ""
 	}
+	return output
+}
+
+func StoMInt[T comparable] (slice []T) map[T]int {
+	output := map[T]int{}
+	for _, element := range slice {
+		output[element] = 0
+	}
+	return output
 }
