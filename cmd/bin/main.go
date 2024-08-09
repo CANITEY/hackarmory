@@ -14,7 +14,7 @@ const (
 
 
 func main() {
-	p := tea.NewProgram(&installer.Model{})
+	p := tea.NewProgram(installer.NewModel())
 	_, err := p.Run()
 	if err != nil {
 		panic(err)
