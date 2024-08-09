@@ -80,7 +80,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		case "enter":
-			fmt.Println(m.Selected)
 			return m, nil
 		default:
 			return m, nil
