@@ -21,10 +21,11 @@ var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#626262")).Render
 
 // tools status 0 not installed, 1 installing, 2 installed
 type Model struct {
-	tools map[string]int
+	tools    map[string]int
 	progress progress.Model
-	queue []string
-	index int
+	queue    []string
+	index    int
+	width    int
 }
 
 func (m Model) Init() tea.Cmd {
@@ -37,9 +38,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 
 	case tea.WindowSizeMsg:
-		m.progress.Width = msg.Width - padding * 2
+		m.width = msg.Width
+		m.progress.Width = msg.Width - padding*2
 		if m.progress.Width > maxWidth {
-			m.progress.Width = msg.Width - 2 * padding
+			m.progress.Width = msg.Width - 2*padding
 		}
 		return m, nil
 
@@ -50,8 +52,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// Note that you can also use progress.Model.SetPercent to set the
 		// percentage value explicitly, too.
-		cmd := m.progress.IncrPercent(0.25)
-		if m.index == len(m.queue) - 1 {
+		cmd := m.progress.SetPercent((float64(m.index) + 1) / float64(len(m.queue)))
+		if m.index == len(m.queue)-1 {
 
 		} else {
 			m.index++
@@ -72,12 +74,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	buf := strings.Builder{}
 	pad := strings.Repeat(" ", padding)
-	progress := "\n" +
-		pad + m.progress.View() + "\n\n" +
-		pad + helpStyle("Press any key to quit")
+
+	progress := lipgloss.NewStyle().
+		Width(m.width - 3).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("63")).
+		MarginTop(1).
+		Render("\n" + " " + m.progress.View() + "\n\n" + pad + helpStyle("Press any key to quit"))
 
 	toolsLogger := helpers.NewToolLogger(m.tools)
-	buf.WriteString(toolsLogger.Log())
+	log := lipgloss.NewStyle().
+		Width(m.width - 3).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("63")).
+		Render(toolsLogger.Log())
+
+	buf.WriteString(log)
 	buf.WriteString(progress)
 	return buf.String()
 }
@@ -95,6 +107,6 @@ func NewModel(tools []string) *Model {
 	return &Model{
 		progress: progress.New(progress.WithDefaultGradient()),
 		tools:    toolsMap,
-		queue: tools,
+		queue:    tools,
 	}
 }
