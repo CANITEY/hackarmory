@@ -9,10 +9,10 @@ import (
 )
 
 func NewToolLogger(tools map[string]int) *ToolLogger {
-	waiting := lipgloss.NewStyle().Foreground(lipgloss.Color("1")).Render
-	installing := lipgloss.NewStyle().Background(lipgloss.Color("1")).Render
-	done := lipgloss.NewStyle().Background(lipgloss.Color("1")).Render
-	error := lipgloss.NewStyle().Background(lipgloss.Color("1")).Render
+	waiting := 		lipgloss.NewStyle().Foreground(lipgloss.Color("25")).PaddingTop(1).Render
+	installing := 	lipgloss.NewStyle().Background(lipgloss.Color("12")).PaddingTop(1).Render
+	done := 		lipgloss.NewStyle().Foreground(lipgloss.Color("2")).PaddingTop(1).Render
+	error := 		lipgloss.NewStyle().Foreground(lipgloss.Color("1")).PaddingTop(1).Render
 	style := style{
 		waiting:    waiting,
 		done:       done,
@@ -37,9 +37,9 @@ type ToolLogger struct {
 func (t *ToolLogger) Log() string {
 	buf := strings.Builder{}
 
-	tools := make([]string, 0)
+	tools := []string{}
 
-	for tool, _ := range t.Tools {
+	for tool := range t.Tools {
 		tools = append(tools, tool)
 	}
 
