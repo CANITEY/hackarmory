@@ -1,27 +1,27 @@
 package helpers
 
 
-func StoMBool[T comparable] (slice []T) map[T]bool {
+func StoMBool[T comparable] (slice []T, defaultValue bool) map[T]bool {
 	output := map[T]bool{}
 	for _, element := range slice {
-		output[element] = false
+		output[element] = defaultValue
 	}
 	return output
 }
 
 
-func StoMStr[T comparable] (slice []T) map[T]string {
+func StoMStr[T comparable] (slice []T, defualtValue string) map[T]string {
 	output := map[T]string{}
 	for _, element := range slice {
-		output[element] = ""
+		output[element] = defualtValue
 	}
 	return output
 }
 
-func StoMInt[T comparable] (slice []T) map[T]int {
+func StoMInt[T comparable] (slice []T, defaultValue int) map[T]int {
 	output := map[T]int{}
 	for _, element := range slice {
-		output[element] = 0
+		output[element] = defaultValue
 	}
 	return output
 }
