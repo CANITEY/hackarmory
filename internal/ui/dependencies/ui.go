@@ -48,6 +48,7 @@ type Model struct {
 	Dependencies []string
 	SuccededDep []string
 	FailedDep []string
+	width int
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -56,6 +57,9 @@ func (m *Model) Init() tea.Cmd {
 
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		return m, nil
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q", "Q", "ctrl+c":
@@ -80,8 +84,21 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m *Model) View() string {
 	buf := strings.Builder{}
-	buf.WriteString(m.FormatDeps())
-	buf.WriteString(fmt.Sprintf("%v Checking depenedencies", m.Spinner.View()))
+	depsFormat := lipgloss.NewStyle().
+		Width(m.width - 3).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("63")).
+		Render(strings.TrimSpace(m.FormatDeps()))
+
+	spinnderFormat := lipgloss.NewStyle().
+		Width(m.width - 3).
+		MarginTop(1).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("63")).
+		Render(fmt.Sprintf("%v Checking depenedencies", m.Spinner.View()))
+
+	buf.WriteString(depsFormat)
+	buf.WriteString(spinnderFormat)
 	return buf.String()
 }
 
