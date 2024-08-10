@@ -21,12 +21,14 @@ var helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#626262")).Render
 
 // tools status 0 not installed, 1 installing, 2 installed
 type Model struct {
-	tools    map[string]int
+	tools map[string]int
 	progress progress.Model
+	queue []string
+	index int
 }
 
 func (m Model) Init() tea.Cmd {
-	return tickCmd()
+	return m.tickCmd(m.index)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -49,7 +51,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// Note that you can also use progress.Model.SetPercent to set the
 		// percentage value explicitly, too.
 		cmd := m.progress.IncrPercent(0.25)
-		return m, tea.Batch(tickCmd(), cmd)
+		if m.index == len(m.queue) - 1 {
+
+		} else {
+			m.index++
+		}
+		return m, tea.Batch(m.tickCmd(m.index), cmd)
 
 	// FrameMsg is sent when the progress bar wants to animate itself
 	case progress.FrameMsg:
@@ -63,23 +70,31 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
+	buf := strings.Builder{}
 	pad := strings.Repeat(" ", padding)
-	return "\n" +
+	progress := "\n" +
 		pad + m.progress.View() + "\n\n" +
 		pad + helpStyle("Press any key to quit")
+
+	toolsLogger := helpers.NewToolLogger(m.tools)
+	buf.WriteString(toolsLogger.Log())
+	buf.WriteString(progress)
+	return buf.String()
 }
 
 // user defined functions
-func tickCmd() tea.Cmd {
-	return tea.Tick(time.Second*1, func(t time.Time) tea.Msg {
+func (m *Model) tickCmd(index int) tea.Cmd {
+	return tea.Tick(time.Second*2, func(t time.Time) tea.Msg {
+		m.tools[m.queue[index]] = 1
 		return tickMsg(t)
 	})
 }
 
 func NewModel(tools []string) *Model {
-	toolsMap := helpers.StoMInt(tools)
+	toolsMap := helpers.StoMInt(tools, -1)
 	return &Model{
 		progress: progress.New(progress.WithDefaultGradient()),
 		tools:    toolsMap,
+		queue: tools,
 	}
 }
