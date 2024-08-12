@@ -91,7 +91,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *Model) View() string {
-	buf := strings.Builder{}
 	list := strings.Builder{}
 	for index, item := range m.Tools {
 		cursor := " "
@@ -115,10 +114,7 @@ func (m *Model) View() string {
 		Width(m.Width - 3).
 		BorderStyle(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color("63")).
-		MarginTop(1).
 		Render("j, J, down to go down, k, K, up to go up; space to toggle selection; enter to go to installation step; Q, q, ctrl+c to quit")
 
-	buf.WriteString(listMenu)
-	buf.WriteString(help)
-	return buf.String()
+	return lipgloss.JoinVertical(lipgloss.Center, listMenu, help)
 }
