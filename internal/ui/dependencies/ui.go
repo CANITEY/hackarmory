@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/CANITEY/hackarmory/internal/checks"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/CANITEY/hackarmory/internal/checks"
 )
 
 type Style struct {
@@ -33,22 +33,23 @@ func NewModel() *Model {
 		"g++",
 	}
 
-	return &Model {
-		Spinner: s,
+	return &Model{
+		Spinner:      s,
 		Dependencies: dependencies,
-		Styles: style,
+		Styles:       style,
 	}
 }
 
 // model function
 type Model struct {
-	Styles Style
-	Spinner spinner.Model
-	Index int
+	Styles       Style
+	Spinner      spinner.Model
+	Index        int
 	Dependencies []string
-	SuccededDep []string
-	FailedDep []string
-	width int
+	SuccededDep  []string
+	FailedDep    []string
+	width        int
+	endMsg string
 }
 
 func (m *Model) Init() tea.Cmd {
@@ -68,38 +69,54 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		}
 	case DepMessage:
-		if m.Index < len(m.Dependencies) - 1 {
+		if m.Index < len(m.Dependencies)-1 {
 			m.Index++
 		} else {
-			break
+			return m, m.IsInComplete
 		}
 		return m, m.CheckDep(m.Index)
+	case ValidationMsg:
+		if msg {
+			m.endMsg = lipgloss.NewStyle().Foreground(lipgloss.Color("1")).Render("There are some missing dependencies, fix them then restart me (press Q to quit)")
+			return m, nil
+		} else {
+			m.endMsg = lipgloss.NewStyle().Foreground(lipgloss.Color("2")).Render("All is good press 'space' to continue")
+			return m, nil
+		}
 	default:
 		var cmd tea.Cmd
 		m.Spinner, cmd = m.Spinner.Update(msg)
 		return m, cmd
 	}
-	return m, nil
 }
 
 func (m *Model) View() string {
-	buf := strings.Builder{}
 	depsFormat := lipgloss.NewStyle().
-		Width(m.width - 3).
 		BorderStyle(lipgloss.NormalBorder()).
+		PaddingLeft(1).
+		Width(m.width - 3).
 		BorderForeground(lipgloss.Color("63")).
 		Render(strings.TrimSpace(m.FormatDeps()))
 
-	spinnderFormat := lipgloss.NewStyle().
+	spinnerFormat := lipgloss.NewStyle().
 		Width(m.width - 3).
-		MarginTop(1).
 		BorderStyle(lipgloss.NormalBorder()).
+		PaddingLeft(1).
 		BorderForeground(lipgloss.Color("63")).
 		Render(fmt.Sprintf("%v Checking depenedencies", m.Spinner.View()))
 
-	buf.WriteString(depsFormat)
-	buf.WriteString(spinnderFormat)
-	return buf.String()
+	endMsg := lipgloss.NewStyle().
+		Width(m.width - 3).
+		BorderStyle(lipgloss.NormalBorder()).
+		PaddingLeft(1).
+		BorderForeground(lipgloss.Color("63")).
+		Render(m.endMsg)
+
+	if m.endMsg == "" {
+		return lipgloss.JoinVertical(lipgloss.Center, depsFormat, spinnerFormat)
+	} else {
+		return lipgloss.JoinVertical(lipgloss.Center, depsFormat, endMsg)
+	}
 }
 
 // user's custom functions
@@ -131,3 +148,13 @@ func (m *Model) FormatDeps() string {
 
 	return buf.String()
 }
+
+type ValidationMsg bool
+
+func (m *Model) IsInComplete() tea.Msg {
+	if len(m.FailedDep) > 0 {
+		return ValidationMsg(true)
+	}
+	return ValidationMsg(false)
+}
+
