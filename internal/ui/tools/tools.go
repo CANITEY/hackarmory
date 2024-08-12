@@ -35,11 +35,12 @@ var defaultTools = []string{
 }
 
 // model initialization
-func NewModel() *Model {
+func NewModel(width int) *Model {
 	slices.Sort(defaultTools)
 	return &Model{
 		Tools: defaultTools,
 		Selected: make(map[string]struct{}),
+		Width: width,
 	}
 }
 
@@ -100,7 +101,7 @@ func (m *Model) View() string {
 
 		selected := " "
 		if _, ok := m.Selected[m.Tools[index]]; ok {
-			selected = "x"
+			selected = "✔"
 		}
 
 		list.WriteString(fmt.Sprintf("%v[%v] %v\n", cursor, selected, item))
@@ -109,10 +110,11 @@ func (m *Model) View() string {
 		Width(m.Width - 3).
 		BorderStyle(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color("63")).
-		Render(list.String())
+		Render(strings.Trim(list.String(), "\n"))
 	help := lipgloss.NewStyle().
 		Width(m.Width - 3).
 		BorderStyle(lipgloss.NormalBorder()).
+		PaddingLeft(1).
 		BorderForeground(lipgloss.Color("63")).
 		Render("j, J, down to go down, k, K, up to go up; space to toggle selection; enter to go to installation step; Q, q, ctrl+c to quit")
 
