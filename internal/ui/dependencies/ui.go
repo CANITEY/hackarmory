@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/CANITEY/hackarmory/internal/checks"
+	"github.com/CANITEY/hackarmory/internal/messages"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -65,6 +66,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "q", "Q", "ctrl+c":
 			return m, tea.Quit
+		case "enter":
+			if m.IsComplete() == ValidationMsg(true) {
+				return m, m.Next
+			} else {
+				return m, nil
+			}
 		default:
 			return m, nil
 		}
@@ -72,15 +79,15 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.Index < len(m.Dependencies)-1 {
 			m.Index++
 		} else {
-			return m, m.IsInComplete
+			return m, m.IsComplete
 		}
 		return m, m.CheckDep(m.Index)
 	case ValidationMsg:
-		if msg {
+		if ok := msg; !ok {
 			m.endMsg = lipgloss.NewStyle().Foreground(lipgloss.Color("1")).Render("There are some missing dependencies, fix them then restart me (press Q to quit)")
 			return m, nil
 		} else {
-			m.endMsg = lipgloss.NewStyle().Foreground(lipgloss.Color("2")).Render("All is good press 'space' to continue")
+			m.endMsg = lipgloss.NewStyle().Foreground(lipgloss.Color("2")).Render("All is good press 'enter' to continue")
 			return m, nil
 		}
 	default:
@@ -151,10 +158,14 @@ func (m *Model) FormatDeps() string {
 
 type ValidationMsg bool
 
-func (m *Model) IsInComplete() tea.Msg {
+func (m *Model) IsComplete() tea.Msg {
 	if len(m.FailedDep) > 0 {
-		return ValidationMsg(true)
+		return ValidationMsg(false)
 	}
-	return ValidationMsg(false)
+	return ValidationMsg(true)
 }
 
+
+func (m *Model) Next() tea.Msg {
+	return messages.Next(true)
+}
