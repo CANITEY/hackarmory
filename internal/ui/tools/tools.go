@@ -5,6 +5,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/CANITEY/hackarmory/internal/helpers"
+	"github.com/CANITEY/hackarmory/internal/messages"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -81,7 +83,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		case "enter":
-			return m, nil
+			return m, m.Install
 		default:
 			return m, nil
 		}
@@ -119,4 +121,9 @@ func (m *Model) View() string {
 		Render("j, J, down to go down, k, K, up to go up; space to toggle selection; enter to go to installation step; Q, q, ctrl+c to quit")
 
 	return lipgloss.JoinVertical(lipgloss.Center, listMenu, help)
+}
+
+func (m *Model) Install() tea.Msg {
+	queue, _ := helpers.MtoS(m.Selected)
+	return messages.Install(queue)
 }

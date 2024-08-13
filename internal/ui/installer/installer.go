@@ -54,7 +54,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// percentage value explicitly, too.
 		cmd := m.progress.SetPercent((float64(m.index) + 1) / float64(len(m.queue)))
 		if m.index == len(m.queue)-1 {
-
 		} else {
 			m.index++
 		}
@@ -94,7 +93,7 @@ func (m Model) View() string {
 func (m *Model) tickCmd(index int) tea.Cmd {
 	return tea.Tick(time.Second*2, func(t time.Time) tea.Msg {
 		m.tools[m.queue[index]] = 1
-		return tickMsg(t)
+		return TickMsg(t)
 	})
 }
 
