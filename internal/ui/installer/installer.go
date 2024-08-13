@@ -6,11 +6,11 @@ import (
 
 	"github.com/CANITEY/hackarmory/internal/helpers"
 	"github.com/charmbracelet/bubbles/progress"
-	"github.com/charmbracelet/bubbletea"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
-type tickMsg time.Time
+type TickMsg time.Time
 
 const (
 	padding  = 2
@@ -45,7 +45,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return m, nil
 
-	case tickMsg:
+	case TickMsg:
 		if m.progress.Percent() == 1.0 {
 			return m, tea.Quit
 		}
