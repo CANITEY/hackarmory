@@ -1,20 +1,14 @@
 package main
 
 import (
-	"github.com/CANITEY/hackarmory/internal/ui/installer"
+	"github.com/CANITEY/hackarmory/internal/ui/index"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type UiInterface int
 
-const (
-	DependencyInterface UiInterface = iota
-	ToolsInterface
-)
-
-
+// link all UIs together
 func main() {
-	p := tea.NewProgram(installer.NewModel())
+	p := tea.NewProgram(index.NewModel("1.0.0"), tea.WithAltScreen())
 	_, err := p.Run()
 	if err != nil {
 		panic(err)
