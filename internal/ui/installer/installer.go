@@ -1,6 +1,7 @@
 package installer
 
 import (
+	"slices"
 	"strings"
 	"time"
 
@@ -35,7 +36,11 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		return m, tea.Quit
+		switch msg.String(){
+			case "Q", "q", "ctrl+c":
+			return m, tea.Quit
+		}
+		return m, nil
 
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
@@ -108,6 +113,7 @@ func NewModel(tools []string, width int) *Model {
 	}
 
 	m.tools = toolsMap
+	slices.Sort(tools)
 	m.queue = tools
 
 	return m
