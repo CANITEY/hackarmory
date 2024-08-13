@@ -83,6 +83,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		case "enter":
+			if len(m.Selected) == 0 {
+				return m, nil
+			}
 			return m, m.Install
 		default:
 			return m, nil
