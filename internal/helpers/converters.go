@@ -25,3 +25,13 @@ func StoMInt[T comparable] (slice []T, defaultValue int) map[T]int {
 	}
 	return output
 }
+
+func MtoS[T, U comparable] (m map[T]U) ([]T, []U) {
+	slice1 := []T{}
+	slice2 := []U{}
+	for key, value := range m {
+		slice1 = append(slice1, key)
+		slice2 = append(slice2, value)
+	}
+	return slice1, slice2
+}
