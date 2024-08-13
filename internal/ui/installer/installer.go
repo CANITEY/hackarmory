@@ -72,14 +72,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	buf := strings.Builder{}
 	pad := strings.Repeat(" ", padding)
 
 	progress := lipgloss.NewStyle().
 		Width(m.width - 3).
 		BorderStyle(lipgloss.NormalBorder()).
 		BorderForeground(lipgloss.Color("63")).
-		MarginTop(1).
 		Render("\n" + " " + m.progress.View() + "\n\n" + pad + helpStyle("Press any key to quit"))
 
 	toolsLogger := helpers.NewToolLogger(m.tools)
@@ -89,9 +87,7 @@ func (m Model) View() string {
 		BorderForeground(lipgloss.Color("63")).
 		Render(toolsLogger.Log())
 
-	buf.WriteString(log)
-	buf.WriteString(progress)
-	return buf.String()
+	return lipgloss.JoinVertical(lipgloss.Center, log, progress)
 }
 
 // user defined functions
@@ -102,11 +98,18 @@ func (m *Model) tickCmd(index int) tea.Cmd {
 	})
 }
 
-func NewModel(tools []string) *Model {
+func NewModel(tools []string, width int) *Model {
 	toolsMap := helpers.StoMInt(tools, -1)
-	return &Model{
-		progress: progress.New(progress.WithDefaultGradient()),
-		tools:    toolsMap,
-		queue:    tools,
+	m := &Model{}
+	m.width = width
+	m.progress = progress.New(progress.WithDefaultGradient())
+	m.progress.Width = width - padding*2
+	if m.progress.Width > maxWidth {
+		m.progress.Width = width - 2*padding
 	}
+
+	m.tools = toolsMap
+	m.queue = tools
+
+	return m
 }
