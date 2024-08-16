@@ -31,3 +31,58 @@ func gobuster() error {
 
 	return nil
 }
+
+
+func nabuu() error {
+	cmd := exec.Command("go", strings.Split("install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest", " ")...)
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func nuclei() error {
+	cmd := exec.Command("go", strings.Split("install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest", " ")...)
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func gxss() error {
+	cmd := exec.Command("go", strings.Split("install github.com/KathanP19/Gxss@latest", " ")...)
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func assetfinder() error {
+	cmd := exec.Command("go", strings.Split("install github.com/tomnomnom/assetfinder@latest", " ")...)
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func httpx() error {
+	cmd := exec.Command("go", strings.Split("install -v github.com/projectdiscovery/httpx/cmd/httpx@latest", " ")...)
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func httprobe() error {
+	cmd := exec.Command("go", strings.Split("install github.com/tomnomnom/httprobe@latest", " ")...)
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
+}
