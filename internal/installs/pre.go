@@ -29,6 +29,16 @@ func CreateToolsDir() (string, error) {
 	return toolsPath, nil
 }
 
+func GetToolsDir() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	toolsPath := path.Join(home, "tools/")
+	return toolsPath, nil
+}
+
 func Install(queue []string) []error {
 
 	return nil
