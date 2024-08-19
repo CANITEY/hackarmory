@@ -1,21 +1,31 @@
 package helpers
 
 import (
+	"os"
 	"os/exec"
 	"path"
 	"strings"
 )
 
-type executer string
+type executer struct {
+	rootPath, ShortPath string
+}
 
 func NewExecuter(absPath string) *executer {
-	return (*executer)(&absPath)
+	shortPath := path.Join(absPath, "path")
+	return &executer{
+		rootPath: absPath,
+		ShortPath: shortPath,
+	}
 }
 
 func (e *executer) Execute(command, relPath string) (error) {
-	cmd := exec.Cmd{}
-	cmd.Dir = path.Join(string(*e), relPath)
-	cmd.Args = strings.Split("git clone https://github.com/aboul3la/Sublist3r.git", " ")
+	args := strings.Fields(command)
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Dir = path.Join(e.rootPath, relPath)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
+
 	if err := cmd.Run(); err != nil {
 		return err
 	}
