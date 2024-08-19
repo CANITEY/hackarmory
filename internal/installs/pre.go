@@ -25,10 +25,11 @@ func CreateToolsDir() (string, error) {
 		return "", nil
 	}
 
-	shortcutPath := path.Join(toolsPath, "path")
+	shortcutPath := path.Join(toolsPath, "path/")
 	if err := os.MkdirAll(shortcutPath, os.ModePerm); err != nil {
 		return "", nil
 	}
+
 
 
 	return toolsPath, nil
