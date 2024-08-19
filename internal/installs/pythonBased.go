@@ -1,9 +1,7 @@
 package installs
 
 import (
-	"os"
 	"path"
-	"path/filepath"
 
 	"github.com/CANITEY/hackarmory/internal/helpers"
 )
@@ -41,13 +39,8 @@ func Sublister() error {
 	if  err != nil {
 		return err
 	}
-
-	// create a shortcat on path
-	toolPath, _ := filepath.Abs(path.Join(toolsDir, "Sublist3r", "sublist3r.py"))
-	shortPath, _ := filepath.Abs(path.Join(exec.ShortPath, "sublist3r"))
-	if err := os.Symlink(toolPath, shortPath); err != nil {
-		return err
-	}
+	toolPath := path.Join(toolsDir, "Sublist3r", "sublist3r.py")
+	exec.CreateSymLink(toolPath, "sublist3r")
 
 	return nil
 }
