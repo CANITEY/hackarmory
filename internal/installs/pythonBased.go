@@ -1,6 +1,10 @@
 package installs
 
 import (
+	"os"
+	"path"
+	"path/filepath"
+
 	"github.com/CANITEY/hackarmory/internal/helpers"
 )
 
@@ -21,13 +25,29 @@ func arjun() error {
 	}
 	return nil
 }
+
+func Sublister() error {
+	toolsDir, err := GetToolsDir()
+	if err != nil {
 		return err
 	}
 
-	cmd.Dir  = path.Join(toolsDir, "Arjun")
-	cmd.Args = strings.Split("python3 setup.py install", " ")
-	if err := cmd.Run(); err != nil {
+	exec := helpers.NewExecuter(toolsDir)
+	err = exec.Execute("git clone https://github.com/aboul3la/Sublist3r.git", "")
+	if  err != nil {
 		return err
 	}
+	err = exec.Execute("pip install -r requirements.txt --break-system-packages", "Sublist3r")
+	if  err != nil {
+		return err
+	}
+
+	// create a shortcat on path
+	toolPath, _ := filepath.Abs(path.Join(toolsDir, "Sublist3r", "sublist3r.py"))
+	shortPath, _ := filepath.Abs(path.Join(exec.ShortPath, "sublist3r"))
+	if err := os.Symlink(toolPath, shortPath); err != nil {
+		return err
+	}
+
 	return nil
 }
