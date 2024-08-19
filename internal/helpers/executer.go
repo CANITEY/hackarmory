@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"os"
 	"os/exec"
 	"path"
 	"strings"
@@ -23,8 +22,6 @@ func (e *executer) Execute(command, relPath string) (error) {
 	args := strings.Fields(command)
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = path.Join(e.rootPath, relPath)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stdout
 
 	if err := cmd.Run(); err != nil {
 		return err
