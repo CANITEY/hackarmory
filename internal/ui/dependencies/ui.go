@@ -32,6 +32,7 @@ func NewModel() *Model {
 		"java",
 		"gcc",
 		"g++",
+		"gem",
 	}
 
 	return &Model{
