@@ -81,7 +81,7 @@ func writePath(conFile, p string) error {
 	}
 
 	// WRITING THE FILE
-	file, err = os.OpenFile(conFile, os.O_TRUNC | os.O_WRONLY, 0644)
+	file, err = os.OpenFile(rcLocation, os.O_TRUNC | os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
