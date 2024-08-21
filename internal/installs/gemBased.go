@@ -17,8 +17,5 @@ func wpscan() error {
 		return nil
 	}
 
-	// TODO: add the gem path to your path variable
-
-
 	return nil
 }
