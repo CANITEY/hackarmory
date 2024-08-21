@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func writePath(conFile, p string) error {
+func WritePath(conFile, p string) error {
 	home, _ := os.UserHomeDir()
 	rcLocation := path.Join(home, conFile)
 	// READING FILE
