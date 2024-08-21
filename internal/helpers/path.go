@@ -16,7 +16,7 @@ func CheckPath(p string) bool {
 }
 
 func AddPath(p string) (bool, error) {
-	if ok := CheckPath(p); !ok {
+	if ok := CheckPath(p); ok {
 		return true, nil
 	}
 	shellName := os.Getenv("SHELL")
