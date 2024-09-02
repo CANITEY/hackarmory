@@ -23,12 +23,14 @@ func AddPath(p string) (bool, error) {
 
 	switch {
 	case strings.Contains(shellName, "fish"):
-		exec := executer{}
-		if err := exec.Execute("fish_add_path /opt/mycoolthing/bin", ""); err != nil {
-			return false, err
-		}
-
-		return true, nil
+		// FIXME: the fish function can't be executed
+		// exec := executer{}
+		// if err := exec.Execute("fish -c \"fish_add_path -g /opt/mycoolthing/bin\"", ""); err != nil {
+		// 	return false, err
+		// }
+		home, _ := os.UserHomeDir()
+		pth := path.Join(home, p)
+		fmt.Printf("Please execute this command:\nfish_add_path %v\n", pth)
 	case strings.Contains(shellName, "zsh"):
 		if err := writePath(".zshrc", p); err != nil {
 			return false, err
