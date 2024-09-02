@@ -24,7 +24,7 @@ func arjun() error {
 	return nil
 }
 
-func Sublister() error {
+func sublister() error {
 	toolsDir, err := GetToolsDir()
 	if err != nil {
 		return err
@@ -35,12 +35,29 @@ func Sublister() error {
 	if  err != nil {
 		return err
 	}
-	err = exec.Execute("pip install -r requirements.txt --break-system-packages", "Sublist3r")
+	err = exec.Execute("pip install -r requirements.txt --break-system-packages", "Sublist3r/")
 	if  err != nil {
 		return err
 	}
 	toolPath := path.Join(toolsDir, "Sublist3r", "sublist3r.py")
-	exec.CreateSymLink(toolPath, "sublist3r")
+	return exec.CreateSymLink(toolPath, "sublist3r")
+}
 
-	return nil
+func dirsearch() error {
+	toolsDir, err := GetToolsDir()
+	if err != nil {
+		return err
+	}
+
+	exec := helpers.NewExecuter(toolsDir)
+	err = exec.Execute("git clone https://github.com/maurosoria/dirsearch.git --depth 1", "")
+	if err != nil {
+		return err
+	}
+	err = exec.Execute("pip install -r requirements.txt --break-system-packages", "dirsearch/")
+	if  err != nil {
+		return err
+	}
+	toolPath := path.Join(toolsDir, "dirsearch", "dirsearch.py")
+	return exec.CreateSymLink(toolPath, "dirsearch")
 }
